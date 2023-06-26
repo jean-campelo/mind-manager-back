@@ -1,20 +1,29 @@
 {
   "scripts": {
-    "commit": "git add . && git-cz"
+    "commit": "git add . && git-cz",
+    "dev": "nodemon src/server.js",
+    "prisma:migrate:dev": "npx prisma migrate dev",
+    "prisma:migration:run": "prisma migrate deploy",
+    "prisma:reset": "npx prisma migrate reset",
+    "prisma:studio": "npx prisma studio"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.16.1"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "dependencies": {
-    "dotenv": "^16.3.1"
   }
 }
