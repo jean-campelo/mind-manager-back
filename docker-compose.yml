@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres
+    container_name: db_mind_manager
+    restart: always
+    ports:
+      - 5433:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+volumes:
+  postgres-volume:
