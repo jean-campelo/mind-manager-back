@@ -9,3 +9,57 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            Int        @id @default(autoincrement())
+  name          String     @db.VarChar(255)
+  email         String     @unique @db.VarChar(255)
+  password      String     @db.VarChar(255)
+  birthday      String     @db.VarChar(50)
+  imgProfileUrl String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  Session       Session[]
+  Patient       Patient[]
+  Consults      Consults[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Patient {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  birthday  String     @db.VarChar(50)
+  doctorId  Int
+  user      User       @relation(fields: [doctorId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Consults  Consults[]
+}
+
+model Consults {
+  id        Int           @id @default(autoincrement())
+  patientId Int
+  patient   Patient       @relation(fields: [patientId], references: [id])
+  doctorId  Int
+  user      User          @relation(fields: [doctorId], references: [id])
+  value     Int
+  isPaid    Boolean
+  status    ConsultStatus
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+enum ConsultStatus {
+  OPEN
+  CANCELED
+}
