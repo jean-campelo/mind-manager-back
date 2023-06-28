@@ -5,14 +5,15 @@ async function signUp(req, res) {
   const { email, password, name, birthday, imgProfileUrl } = req.body;
 
   try {
-    const newUser = await userService.createUser({
+    await userService.createUser({
       email,
       password,
       name,
       birthday,
       imgProfileUrl,
     });
-    return res.status(httpStatus.CREATED).send(newUser);
+
+    return res.status(httpStatus.CREATED).send({ email, name, imgProfileUrl });
   } catch (error) {
     if (error.name === "DuplicatedRegisterError") {
       return res.status(httpStatus.CONFLICT).send(error);
