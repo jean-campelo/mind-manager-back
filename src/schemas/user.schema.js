@@ -7,3 +7,8 @@ export const createUserSchema = joi.object({
   birthday: joi.string().required(),
   imgProfileUrl: joi.string().required(),
 });
+
+export const loginUser = joi.object({
+  email: joi.string().required().email(),
+  password: joi.string().required().min(6),
+});

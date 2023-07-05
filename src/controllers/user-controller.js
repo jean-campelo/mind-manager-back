@@ -22,8 +22,24 @@ async function signUp(req, res) {
   }
 }
 
+async function login(req, res) {
+  const { email, password } = req.body;
+
+  try {
+    const user = await userService.loginUser({ email, password });
+
+    return res.status(httpStatus.OK).send(user);
+  } catch (error) {
+    if (error.name === "LoginError") {
+      return res.status(httpStatus.UNAUTHORIZED).send(error);
+    }
+    return res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+}
+
 const userController = {
   signUp,
+  login,
 };
 
 export default userController;

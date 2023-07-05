@@ -4,3 +4,10 @@ export function emailAlreadyRegistered() {
     message: "E-mail already registered",
   };
 }
+
+export function emailOrPasswordInvalid() {
+  return {
+    name: "LoginError",
+    message: "E-mail or password invalid"
+  }
+}
