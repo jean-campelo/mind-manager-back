@@ -3,6 +3,7 @@ import server from "../../src/server";
 import { cleanDb } from "../helpers.js";
 import httpStatus from "http-status";
 import { faker } from "@faker-js/faker";
+import { createUser, createUserTest } from "../factories/users-factory.js";
 
 const api = supertest(server);
 
@@ -10,7 +11,7 @@ beforeAll(async () => {
   await cleanDb();
 });
 
-describe("POST /user", () => {
+describe("POST /user/sign-up", () => {
   it("should respond with status 422 when body is not given", async () => {
     const response = await api.post("/user/sign-up");
 
@@ -49,5 +50,41 @@ describe("when body is valid", () => {
     const response = await api.post("/user/sign-up").send(generateValidBody);
 
     expect(response.status).toBe(httpStatus.CONFLICT);
+  });
+});
+
+describe("POST /user/login", () => {
+  it("should respond with status 422 when body is not given", async () => {
+    const response = await api.post("/user/login");
+
+    expect(response.status).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+  });
+
+  it("should respond with status 422 when body is not valid", async () => {
+    const invalidBody = { [faker.lorem.word()]: [faker.lorem.word()] };
+    const response = await api.post("/user/login").send(invalidBody);
+
+    expect(response.status).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+  });
+});
+
+describe("login when body is valid", () => {
+  it("should response with status 401 when email is not valid", async () => {
+    const body = await createUser();
+    const response = await api
+      .post("/user/login")
+      .send({ password: body.password, email: faker.internet.email() });
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should response with status 401 when password is not valid", async () => {
+    const body = await createUser();
+    const response = await api.post("/user/login").send({
+      email: body.email,
+      password: faker.internet.password({ length: 10 }),
+    });
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 });
