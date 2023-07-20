@@ -18,3 +18,15 @@ export async function createUser() {
     data: body,
   });
 }
+
+export async function createUserWithParams(body) {
+  const password = body.password;
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const data = { ...body, password: hashedPassword };
+
+  return prisma.user.create({
+    data,
+  });
+}

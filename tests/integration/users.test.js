@@ -3,7 +3,10 @@ import server from "../../src/server";
 import { cleanDb } from "../helpers.js";
 import httpStatus from "http-status";
 import { faker } from "@faker-js/faker";
-import { createUser, createUserTest } from "../factories/users-factory.js";
+import {
+  createUser,
+  createUserWithParams,
+} from "../factories/users-factory.js";
 
 const api = supertest(server);
 
@@ -86,5 +89,46 @@ describe("login when body is valid", () => {
     });
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+});
+
+describe("when credentials are valid", () => {
+  const generateValidBody = () => ({
+    email: faker.internet.email(),
+    password: faker.internet.password({ length: 6 }),
+    name: faker.internet.userName(),
+    birthday: faker.date.birthdate(),
+    imgProfileUrl: faker.internet.avatar(),
+  });
+
+  it("should response with status 200", async () => {
+    const body = generateValidBody();
+    await createUserWithParams(body);
+
+    const validBody = { email: body.email, password: body.password };
+
+    const response = await api.post("/user/login").send(validBody);
+
+    expect(response.status).toBe(httpStatus.OK);
+  });
+
+  it("should response with session token", async () => {
+    const body = generateValidBody();
+    await createUserWithParams(body);
+
+    const validBody = { email: body.email, password: body.password };
+    const response = await api.post("/user/login").send(validBody);
+
+    expect(response.body.token).toBeDefined();
+  });
+
+  it("should response with user data", async () => {
+    const body = generateValidBody();
+    await createUserWithParams(body);
+
+    const validBody = { email: body.email, password: body.password };
+    const response = await api.post("/user/login").send(validBody);
+
+    expect(response.body).toBeDefined();
   });
 });

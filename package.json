@@ -1,9 +1,12 @@
 {
   "type": "module",
   "scripts": {
+    "start": "npm run prisma:migrate:deploy && node src/server.js",
     "commit": "git add . && git-cz",
     "dev": "nodemon src/server.js",
     "test": "npx dotenv -e .env.test npx jest --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch --passWithNoTests --runInBand",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:migration:run": "prisma migrate deploy",
     "prisma:reset": "npx prisma migrate reset",
