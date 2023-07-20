@@ -10,5 +10,17 @@ services:
     volumes:
       - postgres-volume:/var/lib/postgresql/data
 
+  node_app:
+    image: node
+    container_name: node_app
+    restart: always
+    build: .
+    ports: 
+      - 5000:5000
+    depends_on:
+      - db
+    env_file:
+      - .env
+
 volumes:
   postgres-volume:
